@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession } from "@/lib/session";
 import { Insight, InsightKind, newId } from "@/lib/schema";
+import { generateInsights } from "@/lib/llm-client";
 import StepNav from "@/components/StepNav";
 
 const KIND_META: Record<InsightKind, { label: string; icon: string; cls: string }> = {
@@ -20,18 +21,12 @@ export default function InsightPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/generate-insights", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          points: session.points,
-          options: session.options,
-          criteria: session.criteria,
-        }),
+      const { insights } = await generateInsights({
+        points: session.points,
+        options: session.options,
+        criteria: session.criteria,
       });
-      if (!res.ok) throw new Error((await res.json()).error || "Request failed");
-      const { insights } = (await res.json()) as { insights: Insight[] };
-      update({ insights: insights.map((i) => ({ ...i, id: newId("in") })) });
+      update({ insights: (insights as Insight[]).map((i) => ({ ...i, id: newId("in") })) });
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {

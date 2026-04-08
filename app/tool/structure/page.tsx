@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession } from "@/lib/session";
 import { Option, Criterion, newId } from "@/lib/schema";
+import { generateStructure } from "@/lib/llm-client";
 import StepNav from "@/components/StepNav";
 
 export default function StructurePage() {
@@ -14,19 +15,10 @@ export default function StructurePage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/generate-structure", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ points: session.points }),
-      });
-      if (!res.ok) throw new Error((await res.json()).error || "Request failed");
-      const { options, criteria } = (await res.json()) as {
-        options: Option[];
-        criteria: Criterion[];
-      };
+      const { options, criteria } = await generateStructure({ points: session.points });
       update({
-        options: options.map((o) => ({ ...o, id: newId("op") })),
-        criteria: criteria.map((c) => ({ ...c, id: newId("cr") })),
+        options: (options as Option[]).map((o) => ({ ...o, id: newId("op") })),
+        criteria: (criteria as Criterion[]).map((c) => ({ ...c, id: newId("cr") })),
       });
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));

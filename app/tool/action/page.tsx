@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession } from "@/lib/session";
 import { Action, ActionHorizon, newId } from "@/lib/schema";
+import { generateActions } from "@/lib/llm-client";
 import StepNav from "@/components/StepNav";
 
 const HORIZONS: { key: ActionHorizon; label: string; sub: string }[] = [
@@ -20,18 +21,12 @@ export default function ActionPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/generate-actions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          insights: session.insights,
-          options: session.options,
-          points: session.points,
-        }),
+      const { actions } = await generateActions({
+        insights: session.insights,
+        options: session.options,
+        points: session.points,
       });
-      if (!res.ok) throw new Error((await res.json()).error || "Request failed");
-      const { actions } = (await res.json()) as { actions: Action[] };
-      update({ actions: actions.map((a) => ({ ...a, id: newId("ac") })) });
+      update({ actions: (actions as Action[]).map((a) => ({ ...a, id: newId("ac") })) });
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {

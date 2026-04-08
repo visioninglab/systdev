@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SampleLoader from "@/components/SampleLoader";
 
 export default function LandingPage() {
   return (
@@ -23,6 +24,8 @@ export default function LandingPage() {
           How it works
         </a>
       </div>
+
+      <SampleLoader />
 
       <section id="how" className="mt-20 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[

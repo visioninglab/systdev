@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession } from "@/lib/session";
 import { Point, newId } from "@/lib/schema";
+import { extractPoints } from "@/lib/llm-client";
 import PointCard from "@/components/PointCard";
 import StepNav from "@/components/StepNav";
 
@@ -15,14 +16,8 @@ export default function DefinePage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/extract-points", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ input: session.input }),
-      });
-      if (!res.ok) throw new Error((await res.json()).error || "Request failed");
-      const { points } = (await res.json()) as { points: Point[] };
-      update({ points: points.map((p) => ({ ...p, id: newId("pt") })) });
+      const { points } = await extractPoints(session.input);
+      update({ points: (points as Point[]).map((p) => ({ ...p, id: newId("pt") })) });
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {

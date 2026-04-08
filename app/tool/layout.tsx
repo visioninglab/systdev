@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import Stepper from "@/components/Stepper";
 import StaticBanner from "@/components/StaticBanner";
+import SettingsDrawer from "@/components/SettingsDrawer";
 import { SessionProvider } from "@/lib/session";
 
 export default function ToolLayout({ children }: { children: ReactNode }) {
@@ -12,9 +13,12 @@ export default function ToolLayout({ children }: { children: ReactNode }) {
           <Link href="/" className="font-serif text-lg">
             Visioning Lab
           </Link>
-          <span className="text-xs uppercase tracking-widest text-ink/50">
-            Systems Development Tool
-          </span>
+          <div className="flex items-center gap-4">
+            <span className="text-xs uppercase tracking-widest text-ink/50">
+              Systems Development Tool
+            </span>
+            <SettingsDrawer />
+          </div>
         </header>
         <StaticBanner />
         <Stepper />
