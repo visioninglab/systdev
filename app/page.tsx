@@ -1,12 +1,21 @@
 import Link from "next/link";
+import Image from "next/image";
 import SampleLoader from "@/components/SampleLoader";
+import { asset } from "@/lib/asset";
 
 export default function LandingPage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col items-start px-6 py-16">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-accent">
-        Visioning Lab
-      </p>
+      <Link href="https://www.visioninglab.com" className="mb-8 block">
+        <Image
+          src={asset("/images/logo-wordmark.png")}
+          alt="Visioning Lab"
+          width={1100}
+          height={170}
+          priority
+          className="h-8 w-auto"
+        />
+      </Link>
       <h1 className="font-serif text-5xl leading-tight text-ink">
         Systems Development Tool
       </h1>

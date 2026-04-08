@@ -15,6 +15,7 @@ const nextConfig = {
     : {}),
   env: {
     NEXT_PUBLIC_STATIC: isStatic ? "1" : "",
+    NEXT_PUBLIC_BASE_PATH: isStatic ? `/${repo}` : "",
   },
 };
 
